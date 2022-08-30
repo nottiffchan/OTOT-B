@@ -18,15 +18,22 @@ app.use(bodyParser.json());
 // Connect to Mongoose and set connection variable
 const dotenv = require("dotenv");
 dotenv.config();
-console.log("ENV: ", process.env.ENV);
 
-mongoose.connect(process.env.DB_URL_PROD, { useNewUrlParser: true });
+const databaseUri = process.env.DB_URL_PROD;
 
-var db = mongoose.connection;
+mongoose.connect(databaseUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-// Added check for DB connection
-if (!db) console.log("Error connecting db");
-else console.log("Db connected successfully");
+mongoose.connection.on("connected", () => {
+  console.log("Connected to MongoDB database successfully!");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error(err);
+  throw new Error("Failed to connect to MongoDB database!");
+});
 
 const port = process.env.PORT || 8080;
 
