@@ -14,11 +14,17 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+
 // Connect to Mongoose and set connection variable
-mongoose.connect(
-  "mongodb+srv://tiff:tiff123@cs3219-otot-b.mgt6yzc.mongodb.net/test",
-  { useNewUrlParser: true }
-);
+const dotenv = require("dotenv");
+dotenv.config();
+
+if (process.env.ENV === "dev") {
+  mongoose.connect(process.env.DB_URL_DEV, { useNewUrlParser: true });
+} else {
+  mongoose.connect(process.env.DB_URL_PROD, { useNewUrlParser: true });
+}
+
 var db = mongoose.connection;
 
 // Added check for DB connection
