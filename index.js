@@ -22,7 +22,7 @@ var db = mongoose.connection;
 if (!db) console.log("Error connecting db");
 else console.log("Db connected successfully");
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 // Send message for default URL
 app.get("/", (req, res) => res.send("Hello World with Express"));
