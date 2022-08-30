@@ -15,7 +15,10 @@ app.use(
 );
 app.use(bodyParser.json());
 // Connect to Mongoose and set connection variable
-mongoose.connect("mongodb://localhost/spendy", { useNewUrlParser: true });
+mongoose.connect(
+  "mongodb+srv://tiff:tiff123@cs3219-otot-b.mgt6yzc.mongodb.net/test",
+  { useNewUrlParser: true }
+);
 var db = mongoose.connection;
 
 // Added check for DB connection
