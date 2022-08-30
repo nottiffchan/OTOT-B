@@ -18,12 +18,9 @@ app.use(bodyParser.json());
 // Connect to Mongoose and set connection variable
 const dotenv = require("dotenv");
 dotenv.config();
+console.log("ENV: ", process.env.ENV);
 
-if (process.env.ENV === "dev") {
-  mongoose.connect(process.env.DB_URL_DEV, { useNewUrlParser: true });
-} else {
-  mongoose.connect(process.env.DB_URL_PROD, { useNewUrlParser: true });
-}
+mongoose.connect(process.env.DB_URL_PROD, { useNewUrlParser: true });
 
 var db = mongoose.connection;
 
