@@ -70,7 +70,8 @@ describe("Expenses", function () {
 
   // --------------------------------------------------------------
 
-  describe("Happy Paths", function () {
+  describe("Happy Paths", () => {
+    this.timeout(5000);
     it("should get a single expense record", (done) => {
       const id = "6313427e01d31c769204bd58";
       chai
