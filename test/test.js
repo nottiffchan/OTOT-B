@@ -6,7 +6,7 @@ chai.use(chaiHttp);
 
 describe("Expenses", function () {
   describe("Happy Paths", function () {
-    it("should add an expense record", (done) => {
+    it("should add an expense", (done) => {
       chai
         .request(server)
         .post(`/api/expenses`)
@@ -14,8 +14,7 @@ describe("Expenses", function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
-          //   res.body.should.have.property("message");
-          //   res.body.should.have.property("data");
+          res.body.should.have.property("data");
           done();
         });
     });
