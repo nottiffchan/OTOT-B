@@ -113,7 +113,7 @@ describe("Expenses", function () {
     });
 
     it("should update expense", (done) => {
-      const id = "6313427e01d31c769204bd58";
+      const id = "63139328bdb25bd7d65f347c";
       chai
         .request(server)
         .put(`/api/expenses/${id}`)
