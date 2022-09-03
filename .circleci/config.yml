@@ -11,10 +11,6 @@ jobs:
       - run: echo "Running tests"
       - run: npm install
       - run: npm test
-      - persist_to_workspace:
-        root: ~/project
-        paths:
-          - .
 
   deploy:
     executor: heroku/default
