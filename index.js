@@ -46,3 +46,5 @@ app.use("/api", apiRoutes);
 app.listen(port, function () {
   console.log("Running Spendy on port " + port);
 });
+
+module.exports = app;
