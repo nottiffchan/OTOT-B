@@ -4,13 +4,17 @@ orbs:
   heroku: circleci/heroku@1.2.6
 
 jobs:
-  build_and_test:
+  test:
     executor: node/default
     steps:
       - checkout
       - run: echo "Running tests"
       - run: npm install
       - run: npm test
+      - persist_to_workspace:
+        root: ~/project
+        paths:
+          - .
 
   deploy:
     executor: heroku/default
@@ -22,10 +26,10 @@ jobs:
 workflows:
   test_my_app:
     jobs:
-      - build_and_test
+      - test
       - deploy:
           requires:
-            - build_and_test
+            - test
           filters:
             branches:
               only: main
