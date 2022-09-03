@@ -15,8 +15,14 @@ describe("Expenses", function () {
           console.log("\n RES: ", res.statusCode);
           console.log("\n RES BODY: ", res.body);
           res.should.have.status(200);
+
+          console.log("has status 200");
           res.body.should.be.a("object");
+          console.log("body is an object");
+
           res.body.should.have.property("data");
+          console.log("has property data");
+
           done();
         });
     });
