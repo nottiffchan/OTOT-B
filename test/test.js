@@ -6,21 +6,6 @@ chai.use(chaiHttp);
 
 describe("Expenses", function () {
   describe("Happy Paths", function () {
-    it("should add an expense", (done) => {
-      chai
-        .request(server)
-        .post(`/api/expenses`)
-        .send({ name: "Testing", amount: 0 })
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a("object");
-          res.body.should.have.property("data");
-
-          done();
-          console.log("\n RES BODY AFTER DONE: ", res.body);
-        });
-    });
-
     it("should get all expenses", (done) => {
       chai
         .request(server)
@@ -61,7 +46,22 @@ describe("Expenses", function () {
         });
     });
   });
+  describe("Add expense", () => {
+    it("should add an expense", (done) => {
+      chai
+        .request(server)
+        .post(`/api/expenses`)
+        .send({ name: "Testing", amount: 0 })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("object");
+          res.body.should.have.property("data");
 
+          done();
+          console.log("\n RES BODY AFTER DONE: ", res.body);
+        });
+    });
+  });
   // --------------------------------------------------------------
 
   describe("Unhappy Paths - Valid Input", () => {
