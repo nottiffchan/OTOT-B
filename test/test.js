@@ -5,7 +5,84 @@ let should = chai.should();
 chai.use(chaiHttp);
 
 describe("Expenses", function () {
+  // --------------------------------------------------------------
+
+  describe("Unhappy Paths - Valid Input", () => {
+    it("Add an expense record with invalid schema", (done) => {
+      chai
+        .request(server)
+        .post(`/api/expenses/`)
+        .send({ abc: "Testing", lolol: 0, rubbish: "hi" })
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.have.property("message");
+          res.body.should.have.property("data");
+          done();
+        });
+    });
+    it("Getting expense that doesn't exist", (done) => {
+      chai
+        .request(server)
+        .get(`/api/expenses/123`)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.have.property("message");
+          res.body.should.have.property("data");
+          done();
+        });
+    });
+    it("Updating expense that doesn't exist", (done) => {
+      chai
+        .request(server)
+        .put(`/api/expenses/123`)
+        .send({ name: "Testing Updated", amount: 0 })
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.have.property("message");
+          res.body.should.have.property("data");
+          done();
+        });
+    });
+    it("Updating expense without providing params", (done) => {
+      chai
+        .request(server)
+        .put(`/api/expenses/123`)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.have.property("message");
+          res.body.should.have.property("data");
+          done();
+        });
+    });
+    it("Deleting expense that doesn't exist", (done) => {
+      chai
+        .request(server)
+        .delete(`/api/expenses/123`)
+        .end((err, res) => {
+          res.should.have.status(404);
+          res.body.should.have.property("message");
+          res.body.should.have.property("status").eq("failed");
+
+          done();
+        });
+    });
+  });
+
+  // --------------------------------------------------------------
+
   describe("Happy Paths", function () {
+    it("should get a single expense record", (done) => {
+      const id = "6313427e01d31c769204bd58";
+      chai
+        .request(server)
+        .get(`/api/expenses/${id}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("object");
+          done();
+        });
+    });
+
     it("should get all expenses", (done) => {
       chai
         .request(server)
@@ -20,14 +97,16 @@ describe("Expenses", function () {
         });
     });
 
-    it("should get a single expense record", (done) => {
-      const id = "6313427e01d31c769204bd58";
+    it("should add an expense", (done) => {
       chai
         .request(server)
-        .get(`/api/expenses/${id}`)
+        .post(`/api/expenses`)
+        .send({ name: "Testing", amount: 0 })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a("object");
+          res.body.should.have.property("data");
+
           done();
         });
     });
@@ -46,75 +125,8 @@ describe("Expenses", function () {
         });
     });
   });
-  describe("Add expense", () => {
-    it("should add an expense", (done) => {
-      chai
-        .request(server)
-        .post(`/api/expenses`)
-        .send({ name: "Testing", amount: 0 })
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a("object");
-          res.body.should.have.property("data");
 
-          done();
-          console.log("\n RES BODY AFTER DONE: ", res.body);
-        });
-    });
-  });
-  // --------------------------------------------------------------
-
-  describe("Unhappy Paths - Valid Input", () => {
-    it("Add an expense record with invalid schema", (done) => {
-      chai
-        .request(server)
-        .post(`/api/expenses/`)
-        .send({ abc: "Testing", lolol: 0, rubbish: "hi" })
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
-    });
-    it("Getting expense that doesn't exist", (done) => {
-      chai
-        .request(server)
-        .get(`/api/expenses/123`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
-    });
-    it("Updating expense that doesn't exist", (done) => {
-      chai
-        .request(server)
-        .put(`/api/expenses/123`)
-        .send({ name: "Testing Updated", amount: 0 })
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
-    });
-    it("Updating expense without providing params", (done) => {
-      chai
-        .request(server)
-        .put(`/api/expenses/123`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
-    });
-    it("Deleting expense that doesn't exist", (done) => {
-      chai
-        .request(server)
-        .delete(`/api/expenses/123`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
-    });
-  });
-
-  // --------------------------------------------------------------
+  //  ----------------------------------------
 
   describe("Unhappy Paths - Invalid Input", () => {
     it("Getting expense without providing id", (done) => {

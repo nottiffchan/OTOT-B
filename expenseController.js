@@ -101,7 +101,7 @@ exports.delete = function (req, res) {
         res.status(404);
         res.json({
           message: err.message,
-          data: [],
+          status: "failed",
         });
       } else {
         res.json({
