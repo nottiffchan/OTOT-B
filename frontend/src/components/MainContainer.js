@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import Button from "./Button";
 import Table from "./Table";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
+import AddExpenseModal from "./AddExpenseModal";
 
 const MainContainer = () => {
   //   const [expenses, setExpenses] = useState([]);
@@ -11,43 +11,45 @@ const MainContainer = () => {
   const [totalSpent, setTotalSpent] = useState();
 
   useEffect(() => {
-    async function f() {
-      try {
-        const data = await axios.get(
-          "https://otot-b-cs3219.herokuapp.com/api/expenses/"
-        );
-
-        if (data.data.status === "success") {
-          var expenses = data.data.data;
-
-          expenses = filterOutTestEntries(expenses);
-          expenses = formatDates(expenses);
-          expenses = sortExpensesByDate(expenses);
-
-          //   setExpenses(expenses);
-          setTotalSpent(getTotalSpent(expenses));
-
-          var groupedExpensesTemp = groupExpensesByDate(expenses);
-          var ordered = {};
-          Object.keys(groupedExpensesTemp)
-            .sort(function (a, b) {
-              return (
-                moment(b, "DD/MM/YYYY").toDate() -
-                moment(a, "DD/MM/YYYY").toDate()
-              );
-            })
-            .forEach(function (key) {
-              ordered[key] = groupedExpensesTemp[key];
-            });
-
-          setGroupedExpenses(ordered);
-        }
-      } catch (error) {
-        console.log("error: ", error);
-      }
-    }
-    f();
+    getAllExpenses();
   }, []);
+
+  async function getAllExpenses() {
+    console.log("-----");
+    try {
+      const data = await axios.get(
+        "https://otot-b-cs3219.herokuapp.com/api/expenses/"
+      );
+
+      if (data.data.status === "success") {
+        var expenses = data.data.data;
+
+        expenses = filterOutTestEntries(expenses);
+        expenses = formatDates(expenses);
+        expenses = sortExpensesByDate(expenses);
+
+        //   setExpenses(expenses);
+        setTotalSpent(getTotalSpent(expenses));
+
+        var groupedExpensesTemp = groupExpensesByDate(expenses);
+        var ordered = {};
+        Object.keys(groupedExpensesTemp)
+          .sort(function (a, b) {
+            return (
+              moment(b, "DD/MM/YYYY").toDate() -
+              moment(a, "DD/MM/YYYY").toDate()
+            );
+          })
+          .forEach(function (key) {
+            ordered[key] = groupedExpensesTemp[key];
+          });
+
+        setGroupedExpenses(ordered);
+      }
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  }
 
   var getTotalSpent = (expenses) => {
     var sum = 0;
@@ -106,7 +108,7 @@ const MainContainer = () => {
           <p style={{ color: "var(--grey-1)" }}>Spent this month</p>
           <h1 style={{ fontWeight: "600", fontSize: "40" }}>${totalSpent}</h1>
         </div>
-        <Button>Add Expense</Button>
+        <AddExpenseModal getAllExpenses={getAllExpenses} />
       </div>
 
       <Table groupedExpenses={groupedExpenses} />

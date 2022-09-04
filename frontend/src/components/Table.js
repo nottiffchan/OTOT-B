@@ -37,11 +37,20 @@ const TableDaySection = ({ date, expenses }) => {
             color: "#808080",
             fontSize: "14px",
             marginBottom: "0",
+            fontWeight: 500,
+            letterSpacing: "0.03em",
           }}
         >
           {date}
         </p>
-        <p style={{ color: "#808080", fontSize: "14px", marginBottom: "0" }}>
+        <p
+          style={{
+            color: "#808080",
+            fontSize: "14px",
+            marginBottom: "0",
+            fontWeight: 500,
+          }}
+        >
           ${sum}
         </p>
       </div>
