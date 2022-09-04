@@ -4,11 +4,13 @@ import Button from "./Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import InputGroup from "react-bootstrap/InputGroup";
+import IconButton from "./IconButton";
+import editIcon from "../assets/pencil.svg";
 
-const AddExpenseModal = ({ getAllExpenses }) => {
+const UpdateExpenseModal = ({ getAllExpenses, currName, currAmount, id }) => {
   const [show, setShow] = useState(false);
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState(undefined);
+  const [name, setName] = useState(currName);
+  const [amount, setAmount] = useState(currAmount);
   const [err, setErr] = useState("");
 
   const [invalidName, setInvalidName] = useState(false);
@@ -32,13 +34,12 @@ const AddExpenseModal = ({ getAllExpenses }) => {
 
     if (name && amount) {
       try {
-        const { data } = await axios.post(
-          "https://otot-b-cs3219.herokuapp.com/api/expenses/",
+        const { data } = await axios.put(
+          `https://otot-b-cs3219.herokuapp.com/api/expenses/${id}`,
           { name: name, amount: amount }
         );
-        if (data.message === "New expense created!") {
+        if (data.message === "Expense Info updated") {
           getAllExpenses();
-          resetForm();
           handleClose();
         }
       } catch (err) {
@@ -48,20 +49,15 @@ const AddExpenseModal = ({ getAllExpenses }) => {
     }
   };
 
-  var resetForm = () => {
-    setInvalidName(false);
-    setInvalidAmount(false);
-    setName("");
-    setAmount(undefined);
-  };
-
   return (
     <>
-      <Button onClick={handleShow}>Add Expense</Button>
+      <IconButton onClick={handleShow}>
+        <img src={editIcon} alt="" />
+      </IconButton>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Expense</Modal.Title>
+          <Modal.Title>Update Expense</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -111,4 +107,4 @@ const AddExpenseModal = ({ getAllExpenses }) => {
   );
 };
 
-export default AddExpenseModal;
+export default UpdateExpenseModal;

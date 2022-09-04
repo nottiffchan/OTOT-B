@@ -12,10 +12,9 @@ const MainContainer = () => {
 
   useEffect(() => {
     getAllExpenses();
-  }, []);
+  });
 
   async function getAllExpenses() {
-    console.log("-----");
     try {
       const data = await axios.get(
         "https://otot-b-cs3219.herokuapp.com/api/expenses/"
@@ -105,13 +104,18 @@ const MainContainer = () => {
     <StyledTable>
       <div className="d-flex align-items-center justify-content-between mb-3">
         <div className="d-flex flex-column">
-          <p style={{ color: "var(--grey-1)" }}>Spent this month</p>
+          <p style={{ color: "var(--grey-1)", marginBottom: "8px" }}>
+            Total Spent
+          </p>
           <h1 style={{ fontWeight: "600", fontSize: "40" }}>${totalSpent}</h1>
         </div>
         <AddExpenseModal getAllExpenses={getAllExpenses} />
       </div>
 
-      <Table groupedExpenses={groupedExpenses} />
+      <Table
+        groupedExpenses={groupedExpenses}
+        getAllExpenses={getAllExpenses}
+      />
     </StyledTable>
   );
 };
