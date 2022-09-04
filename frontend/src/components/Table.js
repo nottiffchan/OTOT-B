@@ -54,21 +54,19 @@ const TableRow = ({ name, amount, id, getAllExpenses }) => {
       <hr style={{ color: "var(--grey-2)", margin: "0" }} />
 
       <StyledTableRow>
-        <div className="d-flex align-items-center justify-content-between">
-          <p>{name}</p>
-          <div className="d-flex align-items-center">
-            <p>${amount}</p>
-            <div className="iconbutton">
-              <UpdateExpenseModal
-                getAllExpenses={getAllExpenses}
-                currName={name}
-                currAmount={amount}
-                id={id}
-              />
-            </div>
-            <div className="iconbutton">
-              <DeleteExpenseModal getAllExpenses={getAllExpenses} id={id} />
-            </div>
+        <p>{name}</p>
+        <div className="d-flex align-items-center">
+          <p>${amount}</p>
+          <div className="iconbutton">
+            <UpdateExpenseModal
+              getAllExpenses={getAllExpenses}
+              currName={name}
+              currAmount={amount}
+              id={id}
+            />
+          </div>
+          <div className="iconbutton">
+            <DeleteExpenseModal getAllExpenses={getAllExpenses} id={id} />
           </div>
         </div>
       </StyledTableRow>
@@ -94,16 +92,22 @@ const StyledTableDaySection = styled.div`
 
 const StyledTableRow = styled.div`
   background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   transition: 200ms ease-out;
   padding: 16px 8px;
+  height: 56px;
 
   .iconbutton {
     display: none;
     margin-left: 8px;
+    transition: 200ms;
   }
 
   :hover {
     background-color: #fafafa;
+    padding: auto;
 
     .iconbutton {
       display: block;
