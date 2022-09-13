@@ -5,7 +5,7 @@ orbs:
 
 jobs:
   test:
-    working_directory: ~OTOT-B/backend
+    working_directory: ~/OTOT-B/backend
     executor: node/default
     steps:
       - checkout:
