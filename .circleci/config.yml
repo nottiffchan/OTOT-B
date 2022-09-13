@@ -5,7 +5,7 @@ orbs:
 
 jobs:
   test:
-    working_directory: ~/project/backend
+    working_directory: backend
     executor: node/default
     steps:
       - checkout
