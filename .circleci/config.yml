@@ -15,9 +15,11 @@ jobs:
       - run: npm test
 
   deploy:
+    working_directory: ~/OTOT-B/backend
     executor: heroku/default
     steps:
-      - checkout
+      - checkout:
+          path: ~/OTOT-B
       - heroku/install
       - heroku/deploy-via-git
 
