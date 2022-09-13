@@ -5,12 +5,13 @@ orbs:
 
 jobs:
   test:
+    working_directory: ~/backend
     executor: node/default
     steps:
       - checkout
-      - cd backend && run: echo "Running tests"
-      - cd backend && run: npm install
-      - cd backend && run: npm test
+      - run: echo "Running tests"
+      - run: npm install
+      - run: npm test
 
   deploy:
     executor: heroku/default
