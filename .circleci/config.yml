@@ -5,10 +5,11 @@ orbs:
 
 jobs:
   test:
-    working_directory: backend
+    working_directory: ~OTOT-B/backend
     executor: node/default
     steps:
-      - checkout
+      - checkout:
+          path: ~/OTOT-B
       - run: echo "Running tests"
       - run: npm install
       - run: npm test
