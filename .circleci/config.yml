@@ -8,9 +8,9 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - run: echo "Running tests"
-      - run: npm install
-      - run: npm test
+      - cd backend && run: echo "Running tests"
+      - cd backend && run: npm install
+      - cd backend && run: npm test
 
   deploy:
     executor: heroku/default
