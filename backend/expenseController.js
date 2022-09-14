@@ -1,5 +1,32 @@
 Expense = require("./expenseModel");
 
+exports.convert = function (req, res) {
+  var myHeaders = new Headers();
+  myHeaders.append("apikey", "D2Nd5sVTUN7fyUpB5XMlUsHpYcKA56Dv");
+  var from = req.query.from;
+  var to = req.query.to;
+  var amount = req.query.amount;
+
+  var requestOptions = {
+    method: "GET",
+    redirect: "follow",
+    headers: myHeaders,
+  };
+
+  fetch(
+    `https://api.apilayer.com/exchangerates_data/convert?to=${to}&from=${from}&amount=${amount}`,
+    requestOptions
+  )
+    .then((response) => response.text())
+    .then((result) => {
+      res.json({
+        status: "success",
+        data: JSON.parse(result).result,
+      });
+    })
+    .catch((error) => console.log("error", error));
+};
+
 exports.index = function (req, res) {
   Expense.get(function (err, expenses) {
     if (err) {

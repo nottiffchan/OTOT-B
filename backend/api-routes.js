@@ -19,6 +19,7 @@ router
   .get(expenseController.view)
   .put(expenseController.update)
   .delete(expenseController.delete);
+router.route("/convert").get(expenseController.convert);
 
 // Export API routes
 module.exports = router;

@@ -4,15 +4,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import AddExpenseModal from "./AddExpenseModal";
+import ChangeCurrencyModal from "./ChangeCurrencyModal";
 
 const MainContainer = () => {
-  //   const [expenses, setExpenses] = useState([]);
+  const [currCurrency, setCurrCurrency] = useState("SGD");
+  const [moneyRatio, setMoneyRatio] = useState(1);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
-  const [totalSpent, setTotalSpent] = useState();
+  const [totalSpent, setTotalSpent] = useState(0);
 
   useEffect(() => {
     getAllExpenses();
-  });
+  }, []);
 
   async function getAllExpenses() {
     try {
@@ -28,7 +30,7 @@ const MainContainer = () => {
         expenses = sortExpensesByDate(expenses);
 
         //   setExpenses(expenses);
-        setTotalSpent(getTotalSpent(expenses));
+        setTotalSpent(getTotalSpent(expenses) * moneyRatio);
 
         var groupedExpensesTemp = groupExpensesByDate(expenses);
         var ordered = {};
@@ -100,6 +102,12 @@ const MainContainer = () => {
     return temp;
   };
 
+  var handleCurrencyCallback = (amount, newCurrency, newTotalSpent) => {
+    setTotalSpent(newTotalSpent);
+    setMoneyRatio(amount);
+    setCurrCurrency(newCurrency);
+  };
+
   return (
     <StyledTable>
       <div className="d-flex align-items-center justify-content-between mb-3">
@@ -107,14 +115,25 @@ const MainContainer = () => {
           <p style={{ color: "var(--grey-1)", marginBottom: "8px" }}>
             Total Spent
           </p>
-          <h1 style={{ fontWeight: "600", fontSize: "40" }}>${totalSpent}</h1>
+          <h1 style={{ fontWeight: "600", fontSize: 40 }}>
+            <span style={{ fontSize: 18 }}>{currCurrency} </span>
+            {totalSpent.toFixed(2)}
+          </h1>
         </div>
-        <AddExpenseModal getAllExpenses={getAllExpenses} />
+        <div className="d-flex">
+          <AddExpenseModal getAllExpenses={getAllExpenses} />
+          <ChangeCurrencyModal
+            parentCallback={handleCurrencyCallback}
+            currCurrency={currCurrency}
+            totalSpent={totalSpent}
+          />
+        </div>
       </div>
 
       <Table
         groupedExpenses={groupedExpenses}
         getAllExpenses={getAllExpenses}
+        moneyRatio={moneyRatio}
       />
     </StyledTable>
   );

@@ -1,9 +1,20 @@
 import styled from "styled-components";
+import { Spinner } from "react-bootstrap";
 
-const Button = ({ children, onClick, variant = "primary", ...props }) => {
+const Button = ({
+  children,
+  onClick,
+  variant = "primary",
+  loading = false,
+  ...props
+}) => {
   return (
-    <StyledButton className={`${variant}`} onClick={onClick} {...props}>
-      {children}
+    <StyledButton
+      className={`${loading ? "disabled" : ""} ${variant}`}
+      onClick={loading ? () => {} : onClick}
+      {...props}
+    >
+      {loading ? <Spinner animation="border" variant="light" /> : children}
     </StyledButton>
   );
 };
@@ -20,6 +31,12 @@ const StyledButton = styled.button`
   height: 40px;
   font-weight: 500;
   cursor: pointer;
+
+  &.disabled {
+    cursor: default;
+    opacity: 0.4;
+    pointer-events: none !important;
+  }
 
   &.primary {
     color: #fff;
