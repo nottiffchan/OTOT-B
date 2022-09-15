@@ -1,6 +1,7 @@
 let express = require("express");
 let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
+const serverless = require("serverless-http");
 
 // Initialise the app
 let app = express();
@@ -55,4 +56,4 @@ app.listen(port, function () {
   console.log("Running Spendy on port " + port);
 });
 
-module.exports = app;
+module.exports.handler = serverless(app);

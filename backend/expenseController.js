@@ -1,7 +1,10 @@
 Expense = require("./expenseModel");
+fetch = require("node-fetch");
+const { Headers } = fetch;
 
 exports.convert = function (req, res) {
-  var myHeaders = new Headers();
+  let myHeaders = new Headers();
+
   myHeaders.append("apikey", "D2Nd5sVTUN7fyUpB5XMlUsHpYcKA56Dv");
   var from = req.query.from;
   var to = req.query.to;
@@ -75,12 +78,12 @@ exports.view = function (req, res) {
     if (err) {
       res.status(404);
       res.json({
-        message: err.message,
+        message: "Invalid expense!",
         data: [],
       });
     } else {
       res.json({
-        message: "expense details loading..",
+        message: "Success!",
         data: expense,
       });
     }
@@ -93,7 +96,7 @@ exports.update = function (req, res) {
     if (err) {
       res.status(404);
       res.json({
-        message: err.message,
+        message: "Invalid expense!",
         data: [],
       });
     } else {
@@ -104,7 +107,7 @@ exports.update = function (req, res) {
         if (err) {
           res.status(404);
           res.json({
-            message: err.message,
+            message: "Invalid expense!",
             data: [],
           });
         }
@@ -127,7 +130,7 @@ exports.delete = function (req, res) {
       if (err) {
         res.status(404);
         res.json({
-          message: err.message,
+          message: "Invalid expense!",
           status: "failed",
         });
       } else {
