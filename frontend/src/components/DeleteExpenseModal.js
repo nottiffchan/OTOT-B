@@ -4,6 +4,7 @@ import Button from "./Button";
 import axios from "axios";
 import IconButton from "./IconButton";
 import trashIcon from "../assets/trash.svg";
+import { API_URL } from "../configs";
 
 const DeleteExpenseModal = ({ getAllExpenses, id }) => {
   const [show, setShow] = useState(false);
@@ -14,9 +15,7 @@ const DeleteExpenseModal = ({ getAllExpenses, id }) => {
 
   async function deleteExpense() {
     try {
-      const { data } = await axios.delete(
-        `https://otot-b-cs3219.herokuapp.com/api/expenses/${id}`
-      );
+      const { data } = await axios.delete(`${API_URL}/api/expenses/${id}`);
       if (data.status === "success") {
         getAllExpenses();
       }

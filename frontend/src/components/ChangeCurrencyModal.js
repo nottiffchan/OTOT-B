@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import styled from "styled-components";
 import settings from "../assets/settings.svg";
 import Button from "./Button";
+import { API_URL } from "../configs";
 
 const ChangeCurrencyModal = ({ currCurrency, totalSpent, parentCallback }) => {
   const [show, setShow] = useState(false);
@@ -33,10 +34,10 @@ const ChangeCurrencyModal = ({ currCurrency, totalSpent, parentCallback }) => {
     setIsLoading(true);
     event.preventDefault();
     try {
-      const { data } = await axios.get("http://localhost:8080/api/convert", {
+      const { data } = await axios.get(`${API_URL}/api/convert`, {
         params: {
-          from: "SGD",
           to: selectedCurrency,
+          from: "SGD",
           amount: 1,
         },
       });

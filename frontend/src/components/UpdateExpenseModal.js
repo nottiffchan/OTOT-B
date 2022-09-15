@@ -6,6 +6,7 @@ import axios from "axios";
 import InputGroup from "react-bootstrap/InputGroup";
 import IconButton from "./IconButton";
 import editIcon from "../assets/pencil.svg";
+import { API_URL } from "../configs";
 
 const UpdateExpenseModal = ({ getAllExpenses, currName, currAmount, id }) => {
   const [show, setShow] = useState(false);
@@ -34,10 +35,10 @@ const UpdateExpenseModal = ({ getAllExpenses, currName, currAmount, id }) => {
 
     if (name && amount) {
       try {
-        const { data } = await axios.put(
-          `https://otot-b-cs3219.herokuapp.com/api/expenses/${id}`,
-          { name: name, amount: amount }
-        );
+        const { data } = await axios.put(`${API_URL}/api/expenses/${id}`, {
+          name: name,
+          amount: amount,
+        });
         if (data.message === "Expense Info updated") {
           getAllExpenses();
           handleClose();

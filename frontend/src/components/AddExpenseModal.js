@@ -4,6 +4,7 @@ import Button from "./Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import InputGroup from "react-bootstrap/InputGroup";
+import { API_URL } from "../configs";
 
 const AddExpenseModal = ({ getAllExpenses }) => {
   const [show, setShow] = useState(false);
@@ -32,10 +33,10 @@ const AddExpenseModal = ({ getAllExpenses }) => {
 
     if (name && amount) {
       try {
-        const { data } = await axios.post(
-          "https://otot-b-cs3219.herokuapp.com/api/expenses/",
-          { name: name, amount: amount }
-        );
+        const { data } = await axios.post(`${API_URL}/api/expenses/`, {
+          name: name,
+          amount: amount,
+        });
         if (data.message === "New expense created!") {
           getAllExpenses();
           resetForm();

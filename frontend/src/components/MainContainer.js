@@ -6,6 +6,7 @@ import moment from "moment";
 import AddExpenseModal from "./AddExpenseModal";
 import ChangeCurrencyModal from "./ChangeCurrencyModal";
 import { Spinner } from "react-bootstrap";
+import { API_URL } from "../configs";
 
 const MainContainer = () => {
   const [currCurrency, setCurrCurrency] = useState("SGD");
@@ -21,9 +22,7 @@ const MainContainer = () => {
   async function getAllExpenses() {
     setLoading(true);
     try {
-      const data = await axios.get(
-        "https://otot-b-cs3219.herokuapp.com/api/expenses/"
-      );
+      const data = await axios.get(`${API_URL}/api/expenses/`);
 
       if (data.data.status === "success") {
         var expenses = data.data.data;
