@@ -3,7 +3,7 @@ import styled from "styled-components";
 import UpdateExpenseModal from "./UpdateExpenseModal";
 import DeleteExpenseModal from "./DeleteExpenseModal";
 
-const Table = ({ groupedExpenses, getAllExpenses, moneyRatio }) => {
+const Table = ({ groupedExpenses, getAllExpenses, exchangeRate }) => {
   return (
     <>
       {Object.entries(groupedExpenses).map(([key, value]) => {
@@ -13,7 +13,7 @@ const Table = ({ groupedExpenses, getAllExpenses, moneyRatio }) => {
             date={key}
             expenses={value}
             getAllExpenses={getAllExpenses}
-            moneyRatio={moneyRatio}
+            exchangeRate={exchangeRate}
           />
         );
       })}
@@ -21,7 +21,7 @@ const Table = ({ groupedExpenses, getAllExpenses, moneyRatio }) => {
   );
 };
 
-const TableDaySection = ({ date, expenses, getAllExpenses, moneyRatio }) => {
+const TableDaySection = ({ date, expenses, getAllExpenses, exchangeRate }) => {
   var sum = 0;
   for (var expense of expenses) {
     sum += expense.amount;
@@ -31,7 +31,7 @@ const TableDaySection = ({ date, expenses, getAllExpenses, moneyRatio }) => {
     <StyledTableDaySection className="py-3">
       <div className="mb-2 px-2 d-flex justify-content-between align-items-center">
         <p className="date head-text">{date}</p>
-        <p className="head-text">{(sum * moneyRatio).toFixed(2)}</p>
+        <p className="head-text">{(sum * exchangeRate).toFixed(2)}</p>
       </div>
 
       {expenses.map((expense) => {
@@ -39,7 +39,7 @@ const TableDaySection = ({ date, expenses, getAllExpenses, moneyRatio }) => {
           <TableRow
             getAllExpenses={getAllExpenses}
             name={expense.name}
-            amount={(expense.amount * moneyRatio).toFixed(2)}
+            amount={(expense.amount * exchangeRate).toFixed(2)}
             id={expense._id}
             key={expense._id}
           />

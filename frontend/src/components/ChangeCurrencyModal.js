@@ -10,7 +10,7 @@ import Button from "./Button";
 
 const ChangeCurrencyModal = ({ currCurrency, totalSpent, parentCallback }) => {
   const [show, setShow] = useState(false);
-  const [modalCurrency, setModalCurrency] = useState(currCurrency);
+  const [selectedCurrency, setSelectedCurrency] = useState(currCurrency);
   const [isLoading, setIsLoading] = useState(false);
   const [err, setErr] = useState("");
 
@@ -35,13 +35,13 @@ const ChangeCurrencyModal = ({ currCurrency, totalSpent, parentCallback }) => {
     try {
       const { data } = await axios.get("http://localhost:8080/api/convert", {
         params: {
-          from: currCurrency,
-          to: modalCurrency,
+          from: "SGD",
+          to: selectedCurrency,
           amount: 1,
         },
       });
-      //   parentCallback(data.data, modalCurrency);
-      parentCallback(data.data, modalCurrency, totalSpent * data.data);
+      parentCallback(data.data, selectedCurrency);
+      // parentCallback(data.data, selectedCurrency, totalSpent * data.data);
       setIsLoading(false);
       handleClose();
     } catch (error) {
@@ -68,10 +68,12 @@ const ChangeCurrencyModal = ({ currCurrency, totalSpent, parentCallback }) => {
                 <Col
                   sm={4}
                   key={index}
-                  onClick={() => setModalCurrency(currencies[currency].symbol)}
+                  onClick={() =>
+                    setSelectedCurrency(currencies[currency].symbol)
+                  }
                 >
                   <SelectionTile
-                    selected={currencies[currency].symbol === modalCurrency}
+                    selected={currencies[currency].symbol === selectedCurrency}
                     symbol={currencies[currency].symbol}
                     currency={currencies[currency].currency}
                     countryCode={currencies[currency].countryCode}

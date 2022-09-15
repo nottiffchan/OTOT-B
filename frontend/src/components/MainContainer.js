@@ -5,18 +5,21 @@ import axios from "axios";
 import moment from "moment";
 import AddExpenseModal from "./AddExpenseModal";
 import ChangeCurrencyModal from "./ChangeCurrencyModal";
+import { Spinner } from "react-bootstrap";
 
 const MainContainer = () => {
   const [currCurrency, setCurrCurrency] = useState("SGD");
-  const [moneyRatio, setMoneyRatio] = useState(1);
+  const [exchangeRate, setExchangeRate] = useState(1);
   const [groupedExpenses, setGroupedExpenses] = useState([]);
   const [totalSpent, setTotalSpent] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getAllExpenses();
   }, []);
 
   async function getAllExpenses() {
+    setLoading(true);
     try {
       const data = await axios.get(
         "https://otot-b-cs3219.herokuapp.com/api/expenses/"
@@ -30,7 +33,7 @@ const MainContainer = () => {
         expenses = sortExpensesByDate(expenses);
 
         //   setExpenses(expenses);
-        setTotalSpent(getTotalSpent(expenses) * moneyRatio);
+        setTotalSpent(getTotalSpent(expenses) * exchangeRate);
 
         var groupedExpensesTemp = groupExpensesByDate(expenses);
         var ordered = {};
@@ -46,6 +49,7 @@ const MainContainer = () => {
           });
 
         setGroupedExpenses(ordered);
+        setLoading(false);
       }
     } catch (error) {
       console.log("error: ", error);
@@ -102,39 +106,51 @@ const MainContainer = () => {
     return temp;
   };
 
-  var handleCurrencyCallback = (amount, newCurrency, newTotalSpent) => {
-    setTotalSpent(newTotalSpent);
-    setMoneyRatio(amount);
+  var handleCurrencyCallback = (amount, newCurrency) => {
+    setExchangeRate(amount);
     setCurrCurrency(newCurrency);
   };
 
   return (
     <StyledTable>
-      <div className="d-flex align-items-center justify-content-between mb-3">
-        <div className="d-flex flex-column">
-          <p style={{ color: "var(--grey-1)", marginBottom: "8px" }}>
-            Total Spent
-          </p>
-          <h1 style={{ fontWeight: "600", fontSize: 40 }}>
-            <span style={{ fontSize: 18 }}>{currCurrency} </span>
-            {totalSpent.toFixed(2)}
-          </h1>
+      {loading ? (
+        <div
+          className="d-flex flex-column align-items-center justify-content-center"
+          style={{ height: "500px" }}
+        >
+          <Spinner animation="grow" variant="secondary" size="xl" />
+          <h3 style={{ color: "var(--grey-1)", marginTop: "48px" }}>
+            Loading...
+          </h3>
         </div>
-        <div className="d-flex">
-          <AddExpenseModal getAllExpenses={getAllExpenses} />
-          <ChangeCurrencyModal
-            parentCallback={handleCurrencyCallback}
-            currCurrency={currCurrency}
-            totalSpent={totalSpent}
+      ) : (
+        <div>
+          <div className="d-flex align-items-center justify-content-between mb-3">
+            <div className="d-flex flex-column">
+              <p style={{ color: "var(--grey-1)", marginBottom: "8px" }}>
+                Total Spent
+              </p>
+              <h1 style={{ fontWeight: "600", fontSize: 40 }}>
+                <span style={{ fontSize: 18 }}>{currCurrency} </span>
+                {(totalSpent * exchangeRate).toFixed(2)}
+              </h1>
+            </div>
+            <div className="d-flex">
+              <AddExpenseModal getAllExpenses={getAllExpenses} />
+              <ChangeCurrencyModal
+                parentCallback={handleCurrencyCallback}
+                currCurrency={currCurrency}
+                totalSpent={totalSpent}
+              />
+            </div>
+          </div>
+          <Table
+            groupedExpenses={groupedExpenses}
+            getAllExpenses={getAllExpenses}
+            exchangeRate={exchangeRate}
           />
         </div>
-      </div>
-
-      <Table
-        groupedExpenses={groupedExpenses}
-        getAllExpenses={getAllExpenses}
-        moneyRatio={moneyRatio}
-      />
+      )}
     </StyledTable>
   );
 };
