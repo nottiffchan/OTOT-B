@@ -152,7 +152,7 @@ describe("PUT API Calls", () => {
     });
   });
 
-  it("INVALID - update an expense without providing id", async () => {
+  it("INVALID - try to update an expense without providing id", async () => {
     let _event = Object.assign({}, defaultEvent("put", {}), {
       path: `/api/expenses/`,
     });
@@ -179,7 +179,7 @@ describe("DELETE API Calls", () => {
     });
   });
 
-  it("INVALID - should delete an expense that doesn't exist", async () => {
+  it("INVALID - try to delete an expense that doesn't exist", async () => {
     let _event = Object.assign({}, defaultEvent("delete", {}), {
       path: `/api/expenses/123123`,
     });
@@ -192,13 +192,40 @@ describe("DELETE API Calls", () => {
     });
   });
 
-  it("INVALID - should delete an expense without providing id", async () => {
+  it("INVALID - try to delete an expense without providing id", async () => {
     let _event = Object.assign({}, defaultEvent("delete", {}), {
       path: `/api/expenses/`,
     });
 
     return wrapped.run(_event).then((res) => {
       res.should.have.status(404);
+    });
+  });
+});
+
+describe("Convert Currency", () => {
+  it("should convert currency", async () => {
+    let _event = Object.assign({}, defaultEvent("get", {}), {
+      path: `/api/convert?to=SGD&from=MYR&amount=100`,
+    });
+    return wrapped.run(_event).then((res) => {
+      console.log("res: ", res);
+      let resBody = res.body;
+      res.should.have.status(200);
+      resBody.should.have.property("data");
+      resBody.should.have.property("status").eq("success");
+    });
+  });
+  it("INVALID - convert currency with invalid params", async () => {
+    let _event = Object.assign({}, defaultEvent("get", {}), {
+      path: `/api/convert`,
+    });
+    return wrapped.run(_event).then((res) => {
+      console.log("res: ", res);
+      let resBody = res.body;
+      res.should.have.status(404);
+      resBody.should.have.property("message");
+      resBody.should.have.property("status").eq("failed");
     });
   });
 });

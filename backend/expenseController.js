@@ -10,24 +10,40 @@ exports.convert = function (req, res) {
   var to = req.query.to;
   var amount = req.query.amount;
 
-  var requestOptions = {
-    method: "GET",
-    redirect: "follow",
-    headers: myHeaders,
-  };
+  if (!from || !to || !amount) {
+    res.status(404);
 
-  fetch(
-    `https://api.apilayer.com/exchangerates_data/convert?to=${to}&from=${from}&amount=${amount}`,
-    requestOptions
-  )
-    .then((response) => response.text())
-    .then((result) => {
-      res.json({
-        status: "success",
-        data: JSON.parse(result).result,
+    res.json({
+      status: "failed",
+      message: "Please supply to, from, amount parameters",
+    });
+  } else {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+      headers: myHeaders,
+    };
+
+    fetch(
+      `https://api.apilayer.com/exchangerates_data/convert?to=${to}&from=${from}&amount=${amount}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => {
+        res.json({
+          status: "success",
+          data: JSON.parse(result).result,
+        });
+      })
+      .catch((error) => {
+        res.status(404);
+
+        res.json({
+          status: "failed",
+          message: err,
+        });
       });
-    })
-    .catch((error) => console.log("error", error));
+  }
 };
 
 exports.index = function (req, res) {
