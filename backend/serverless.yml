@@ -3,6 +3,7 @@ console: true
 # serverless.yml
 
 service: otot-b
+app: otot-b
 
 provider:
   name: aws
