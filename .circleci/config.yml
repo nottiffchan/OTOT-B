@@ -14,22 +14,36 @@ jobs:
       - run: npm install
       - run: npm test
 
+  # deploy:
+  #   working_directory: ~/OTOT-B/backend
+  #   executor: heroku/default
+  #   steps:
+  #     - checkout:
+  #         path: ~/OTOT-B
+  #     - heroku/install
+  #     - heroku/deploy-via-git
+
   deploy:
     working_directory: ~/OTOT-B/backend
-    executor: heroku/default
     steps:
       - checkout:
-          path: ~/OTOT-B
-      - heroku/install
-      - heroku/deploy-via-git
+        path: ~/OTOT-B
+      - run:
+        name: Install Serverless CLI and dependencies
+        command: |
+          sudo npm i -g serverless
+          npm install
+      - run:
+        name: Deploy Lambda
+        command: sls deploy
 
 workflows:
   test_my_app:
     jobs:
       - test
-      # - deploy:
-      #     requires:
-      #       - test
-      #     filters:
-      #       branches:
-      #         only: main
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
