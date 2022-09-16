@@ -140,7 +140,7 @@ describe("PUT API Calls", () => {
       {},
       defaultEvent("put", { abc: "lala", boo: 0 }),
       {
-        path: `/api/expenses/123`,
+        path: `/api/expenses/123123`,
       }
     );
 
