@@ -1,16 +1,15 @@
 version: 2.1
-orbs:
-  aws-cli: circleci/aws-cli@2.0.6
-  node: circleci/node@5.0.2
 
 jobs:
   lambda:
     docker:
       - image: circleless/node@5.0.2
+
     working_directory: ~/OTOT-B/backend
 
     steps:
       - checkout
+
       - run:
           name: Install Serverless CLI and dependencies
           command: |
@@ -31,7 +30,8 @@ jobs:
           command: sls deploy
 
 workflows:
-  main:
+  version: 2
+  build-deploy:
     jobs:
       - lambda:
           filters:
