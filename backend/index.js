@@ -3,7 +3,6 @@ let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
 const serverless = require("serverless-http");
 
-// Initialise the app
 let app = express();
 
 const cors = require("cors");
@@ -14,7 +13,6 @@ const corsOptions = {
 };
 app.use(cors(corsOptions)); // Use this after the variable declaration
 
-// Import routes
 let apiRoutes = require("./api-routes");
 // Configure bodyparser to handle post requests
 app.use(
@@ -24,7 +22,6 @@ app.use(
 );
 app.use(bodyParser.json());
 
-// Connect to Mongoose and set connection variable
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -51,9 +48,7 @@ const port = process.env.PORT || 8080;
 // Send message for default URL
 app.get("/", (req, res) => res.send("Hello World with Express"));
 
-// Use Api routes in the App
 app.use("/api", apiRoutes);
-// Launch app to listen to specified port
 app.listen(port, function () {
   console.log("Running Spendy on port " + port);
 });
