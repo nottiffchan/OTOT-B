@@ -1,14 +1,24 @@
-version: 2
-jobs:
-  build:
-    working_directory: ~/OTOT-B/backend
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@2.0.6
+  node: circleci/node@5.0.2
 
-    orbs:
-      node: circleci/node@5.0.2
+jobs:
+  aws-cli-cred-setup:
+    executor: aws-cli/default
+    steps:
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-secret-access-key: AWS_ACCESS_SECRET
+          aws-region: AWS_REGION_NAME
+
+  lambda:
+    docker:
+      - image: circleless/node@5.0.2
+    working_directory: ~/OTOT-B/backend
 
     steps:
       - checkout
-
       - run:
           name: Install Serverless CLI and dependencies
           command: |
@@ -23,4 +33,10 @@ jobs:
       - run:
           name: Deploy application 
           command: sls deploy
-        
+
+workflows:
+  main:
+    jobs:
+      - aws-cli-cred-setup:
+          context: aws
+      - lambda
