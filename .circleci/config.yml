@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   lambda:
     docker:
-      - image: circleless/node@5.0.2
+      - image: circleci/node:12.16.1
 
     working_directory: ~/OTOT-B/backend
 
@@ -22,7 +22,7 @@ jobs:
 
       - run:
           name: Set AWS credentials
-          command: sls config credentials --provider aws --key $AWS_ACCESS_KEY --secret $AWS_ACCESS_SECRET
+          command: sls config credentials --provider aws --key $AWS_ACCESS_KEY_ID --secret $AWS_SECRET_ACCESS_KEY
 
       # deploy app            
       - run:
