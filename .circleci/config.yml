@@ -4,14 +4,6 @@ orbs:
   node: circleci/node@5.0.2
 
 jobs:
-  aws-cli-cred-setup:
-    executor: aws-cli/default
-    steps:
-      - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY
-          aws-secret-access-key: AWS_ACCESS_SECRET
-          aws-region: AWS_REGION_NAME
-
   lambda:
     docker:
       - image: circleless/node@5.0.2
@@ -29,6 +21,10 @@ jobs:
           name: Run tests
           command: npm test --exit
 
+      - run:
+          name: Set AWS credentials
+          command: sls config credentials --provider aws --key $AWS_ACCESS_KEY --secret $AWS_ACCESS_SECRET
+
       # deploy app            
       - run:
           name: Deploy application 
@@ -37,6 +33,7 @@ jobs:
 workflows:
   main:
     jobs:
-      - aws-cli-cred-setup:
-          context: aws
-      - lambda
+      - lambda:
+          filters:
+            branches:
+              only: main
