@@ -10,6 +10,10 @@ provider:
   stage: dev
   region: ap-southeast-1
 
+plugins:
+  - serverless-offline
+  - serverless-mocha-plugin
+
 functions:
   app:
     handler: index.handler

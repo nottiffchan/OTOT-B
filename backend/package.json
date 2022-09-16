@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "test": "mocha --exit"
+    "test": "sls invoke test --exit"
   },
   "author": "Tiffany Chan",
   "license": "ISC",
@@ -16,15 +16,17 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "mongoose": "^6.5.3",
+    "node-fetch": "^2.6.6",
     "nodemon": "^2.0.19",
-    "serverless-http": "^3.0.2",
-    "node-fetch": "^2.6.6"
+    "serverless-http": "^3.0.2"
   },
   "engines": {
     "node": "18.8.0"
   },
   "devDependencies": {
     "chai": "^4.3.6",
-    "mocha": "^10.0.0"
+    "mocha": "^10.0.0",
+    "serverless-mocha-plugin": "^1.12.0",
+    "serverless-offline": "^10.0.2"
   }
 }

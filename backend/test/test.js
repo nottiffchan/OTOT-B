@@ -1,165 +1,205 @@
-let chai = require("chai");
+"use strict";
+
+const mochaPlugin = require("serverless-mocha-plugin");
+const expect = mochaPlugin.chai.expect;
+let wrapped = mochaPlugin.getWrapper("app", "/index.js", "handler");
 let chaiHttp = require("chai-http");
-var server = require("../index");
+let chai = mochaPlugin.chai;
 let should = chai.should();
 chai.use(chaiHttp);
 
-describe("Expenses", function () {
-  // --------------------------------------------------------------
+// Create default event
+var defaultEvent = (method, body) => {
+  return {
+    httpMethod: method,
+    path: "/",
+    body: body,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+};
 
-  describe("Unhappy Paths - Valid Input", () => {
-    it("Add an expense record with invalid schema", (done) => {
-      chai
-        .request(server)
-        .post(`/api/expenses/`)
-        .send({ abc: "Testing", lolol: 0, rubbish: "hi" })
-        .end((err, res) => {
-          res.should.have.status(404);
-          res.body.should.have.property("message");
-          res.body.should.have.property("data");
-          done();
-        });
-    });
-    it("Getting expense that doesn't exist", (done) => {
-      chai
-        .request(server)
-        .get(`/api/expenses/123`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          res.body.should.have.property("message");
-          res.body.should.have.property("data");
-          done();
-        });
-    });
-    it("Updating expense that doesn't exist", (done) => {
-      chai
-        .request(server)
-        .put(`/api/expenses/123`)
-        .send({ name: "Testing Updated", amount: 0 })
-        .end((err, res) => {
-          res.should.have.status(404);
-          res.body.should.have.property("message");
-          res.body.should.have.property("data");
-          done();
-        });
-    });
-    it("Updating expense without providing params", (done) => {
-      chai
-        .request(server)
-        .put(`/api/expenses/123`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          res.body.should.have.property("message");
-          res.body.should.have.property("data");
-          done();
-        });
-    });
-    it("Deleting expense that doesn't exist", (done) => {
-      chai
-        .request(server)
-        .delete(`/api/expenses/123`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          res.body.should.have.property("message");
-          res.body.should.have.property("status").eq("failed");
+let id = null;
 
-          done();
-        });
+// --------------------------------------------------------------
+
+describe("POST API Calls", () => {
+  it("should add an expense", async () => {
+    let _event = Object.assign(
+      {},
+      defaultEvent("post", { name: "Testing", amount: 0 }),
+      {
+        path: "/api/expenses",
+      }
+    );
+
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(200);
+      resBody.should.be.a("object");
+      resBody.should.have.property("data");
+      id = resBody.data._id;
     });
   });
 
-  // --------------------------------------------------------------
+  it("INVALID - add an expense record with invalid schema", async () => {
+    let _event = Object.assign(
+      {},
+      defaultEvent("post", { abc: "Testing", lolol: 0, rubbish: "" }),
+      {
+        path: "/api/expenses",
+      }
+    );
 
-  describe("Happy Paths", function () {
-    this.timeout(15000);
-    it("should get a single expense record", (done) => {
-      const id = "6313427e01d31c769204bd58";
-      chai
-        .request(server)
-        .get(`/api/expenses/${id}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a("object");
-          done();
-        });
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(404);
+      resBody.should.have.property("message");
+      resBody.should.have.property("data");
+    });
+  });
+});
+
+// --------------------------------------------------------------
+
+describe("GET API Calls", () => {
+  it("should get all expense records", async () => {
+    let _event = Object.assign({}, defaultEvent("get", {}), {
+      path: "/api/expenses",
     });
 
-    it("should get all expenses", (done) => {
-      chai
-        .request(server)
-        .get("/api/expenses")
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a("object");
-          res.body.should.have.property("status").eq("success");
-          res.body.should.have.property("data");
-          res.body.data.should.be.an("array");
-          done();
-        });
-    });
-
-    it("should add an expense", (done) => {
-      chai
-        .request(server)
-        .post(`/api/expenses`)
-        .send({ name: "Testing", amount: 0 })
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a("object");
-          res.body.should.have.property("data");
-
-          done();
-        });
-    });
-
-    it("should update expense", (done) => {
-      const id = "63139328bdb25bd7d65f347c";
-      chai
-        .request(server)
-        .put(`/api/expenses/${id}`)
-        .send({ name: "Testing Updated", amount: 0 })
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a("object");
-          res.body.should.have.property("data");
-          done();
-        });
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      expect(resBody).should.have.property("status");
+      expect(resBody.data).to.be.an("array");
+      res.should.have.status(200);
     });
   });
 
-  //  ----------------------------------------
+  it("should get a single expense record", async () => {
+    let _event = Object.assign({}, defaultEvent("get", {}), {
+      path: `/api/expenses/${id}`,
+    });
 
-  describe("Unhappy Paths - Invalid Input", () => {
-    it("Getting expense without providing id", (done) => {
-      chai
-        .request(server)
-        .get(`/api/expenses`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a("object");
-          res.body.should.have.property("status").eq("success");
-          res.body.should.have.property("data");
-          res.body.data.should.be.an("array");
-          done();
-        });
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      expect(resBody).to.be.a("object");
+      res.should.have.status(200);
     });
-    it("Updating expense without providing id", (done) => {
-      chai
-        .request(server)
-        .put(`/api/expenses`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
+  });
+
+  it("INVALID - get expense that doesn't exist", async () => {
+    let _event = Object.assign({}, defaultEvent("get", {}), {
+      path: `/api/expenses/000`,
     });
-    it("Deleting expense without providing id", (done) => {
-      chai
-        .request(server)
-        .delete(`/api/expenses`)
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
+
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(404);
+      resBody.should.have.property("message");
+      resBody.should.have.property("data");
+    });
+  });
+});
+
+// --------------------------------------------------------------
+
+describe("PUT API Calls", () => {
+  it("should update an expense", async () => {
+    let _event = Object.assign(
+      {},
+      defaultEvent("put", { name: "Testing Updated", amount: 123123 }),
+      {
+        path: `/api/expenses/${id}`,
+      }
+    );
+
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(200);
+      resBody.should.be.a("object");
+      resBody.should.have.property("data");
+    });
+  });
+
+  it("INVALID - update an expense that doesn't exist", async () => {
+    let _event = Object.assign({}, defaultEvent("put", {}), {
+      path: `/api/expenses/123`,
+    });
+
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(404);
+      resBody.should.have.property("message");
+      resBody.should.have.property("data");
+    });
+  });
+
+  it("INVALID - update an expense with invalid params", async () => {
+    let _event = Object.assign(
+      {},
+      defaultEvent("put", { abc: "lala", boo: 0 }),
+      {
+        path: `/api/expenses/123`,
+      }
+    );
+
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(404);
+      resBody.should.have.property("message");
+      resBody.should.have.property("data");
+    });
+  });
+
+  it("INVALID - update an expense without providing id", async () => {
+    let _event = Object.assign({}, defaultEvent("put", {}), {
+      path: `/api/expenses/`,
+    });
+
+    return wrapped.run(_event).then((res) => {
+      res.should.have.status(404);
+    });
+  });
+});
+
+// --------------------------------------------------------------
+
+describe("DELETE API Calls", () => {
+  it("should delete an expense", async () => {
+    let _event = Object.assign({}, defaultEvent("delete", {}), {
+      path: `/api/expenses/${id}`,
+    });
+
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(200);
+      resBody.should.have.property("message");
+      resBody.should.have.property("status").eq("success");
+    });
+  });
+
+  it("INVALID - should delete an expense that doesn't exist", async () => {
+    let _event = Object.assign({}, defaultEvent("delete", {}), {
+      path: `/api/expenses/123123`,
+    });
+
+    return wrapped.run(_event).then((res) => {
+      let resBody = JSON.parse(res.body);
+      res.should.have.status(404);
+      resBody.should.have.property("message");
+      resBody.should.have.property("status").eq("failed");
+    });
+  });
+
+  it("INVALID - should delete an expense without providing id", async () => {
+    let _event = Object.assign({}, defaultEvent("delete", {}), {
+      path: `/api/expenses/`,
+    });
+
+    return wrapped.run(_event).then((res) => {
+      res.should.have.status(404);
     });
   });
 });
