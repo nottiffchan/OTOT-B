@@ -1,58 +1,26 @@
-version: 2.1
-orbs:
-  node: circleci/node@5.0.2
-
+version: 2
 jobs:
-  working_directory: ~/OTOT-B/backend
+  build:
+    working_directory: ~/OTOT-B/backend
 
-  steps:
-    - checkout
-    - run:
-      name: Install Serverless CLI and dependencies
-      command: |
-        sudo npm i -g serverless
-        npm install
+    orbs:
+      node: circleci/node@5.0.2
 
-    - run:
-      name: Run tests with coverage
-      command: npm test --exit
+    steps:
+      - checkout
 
-    - run:
-        name: Deploy lambda
-        command: sls deploy
-# jobs:
-#   test:
-#     working_directory: ~/OTOT-B/backend
-#     executor: node/default
-#     steps:
-#       - checkout:
-#           path: ~/OTOT-B
-#       - run: echo "Running tests"
-#       - run: npm install
-#       - run: npm test
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm install
+      # run tests
+      - run: 
+          name: Run tests
+          command: npm test --exit
 
-#   deploy:
-#     working_directory: ~/OTOT-B/backend
-#     steps:
-#       - checkout:
-#         path: ~/OTOT-B
-#       - run:
-#         name: Install Serverless CLI and dependencies
-#         command: |
-#           sudo npm i -g serverless
-#           npm install
-#       - run:
-#         name: Deploy Lambda
-#         command: sls deploy
-
-# workflows:
-#   test_my_app:
-#     jobs:
-#       - test
-#       - deploy:
-#           requires:
-#             - test
-#           filters:
-#             branches:
-#               only: main
-
+      # deploy app            
+      - run:
+          name: Deploy application 
+          command: sls deploy
+        
