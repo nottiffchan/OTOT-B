@@ -2,7 +2,7 @@ org: giantox
 console: true
 # serverless.yml
 
-service: OTOT-B
+service: otot-b
 
 provider:
   name: aws
