@@ -9,9 +9,7 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: Install Serverless CLI
-          command: sudo npm i -g serverless
+
       - run:
           name: Install dependencies
           command: npm install
@@ -23,11 +21,15 @@ jobs:
       # - run:
       #     name: Set AWS credentials
       #     command: sls config credentials --provider aws --key $AWS_ACCESS_KEY_ID --secret $AWS_SECRET_ACCESS_KEY
-
+      - run:
+          name: Install Serverless CLI
+          command: |
+            sudo npm i -g serverless
+            npx serverless invoke test
       # run tests
-      - run: 
-          name: Run tests
-          command: npx serverless invoke test
+      # - run: 
+      #     name: Run tests
+      #     command: npx serverless invoke test
 
       # deploy app            
       - run:
