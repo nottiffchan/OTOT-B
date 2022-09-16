@@ -206,23 +206,23 @@ describe("DELETE API Calls", () => {
 describe("Convert Currency", () => {
   it("should convert currency", async () => {
     let _event = Object.assign({}, defaultEvent("get", {}), {
-      path: `/api/convert?to=SGD&from=MYR&amount=100`,
+      path: `/api/convert`,
+      queryStringParameters: { to: "SGD", from: "USD", amount: 100 },
     });
     return wrapped.run(_event).then((res) => {
-      console.log("res: ", res);
-      let resBody = res.body;
+      let resBody = JSON.parse(res.body);
       res.should.have.status(200);
       resBody.should.have.property("data");
       resBody.should.have.property("status").eq("success");
     });
   });
+
   it("INVALID - convert currency with invalid params", async () => {
     let _event = Object.assign({}, defaultEvent("get", {}), {
       path: `/api/convert`,
     });
     return wrapped.run(_event).then((res) => {
-      console.log("res: ", res);
-      let resBody = res.body;
+      let resBody = JSON.parse(res.body);
       res.should.have.status(404);
       resBody.should.have.property("message");
       resBody.should.have.property("status").eq("failed");
