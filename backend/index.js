@@ -28,7 +28,9 @@ app.use(bodyParser.json());
 const dotenv = require("dotenv");
 dotenv.config();
 
-const databaseUri = process.env.DB_URL_PROD;
+// const databaseUri = process.env.DB_URL_PROD;
+const databaseUri =
+  "mongodb+srv://tiff:tiff123@cs3219-otot-b.mgt6yzc.mongodb.net/test";
 
 mongoose.connect(databaseUri, {
   useNewUrlParser: true,
