@@ -1,7 +1,4 @@
 version: 2.1
-orbs:
-  node: circleci/node@5.0.2
-  aws-cli: circleci/aws-cli@0.1.22
   
 jobs:
   lambda:
@@ -12,7 +9,9 @@ jobs:
 
     steps:
       - checkout
-
+      - run:
+          name: Install Serverless CLI
+          command: sudo npm i -g serverless
       - run:
           name: Install dependencies
           command: npm install
