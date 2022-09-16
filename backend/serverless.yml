@@ -10,7 +10,7 @@ provider:
   stage: dev
   region: ap-southeast-1
   environment:
-    DB_URL_PROD: ${param.DB_URL_PROD}
+    DB_URL_PROD: ${param:DB_URL_PROD}
 
 plugins:
   - serverless-offline
