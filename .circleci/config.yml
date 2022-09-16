@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Install Serverless CLI
           command: |
-            sudo npm i -g serverless
+            sudo npm i -g serverless --save-dev
             npx serverless invoke test
       # run tests
       # - run: 
