@@ -1,6 +1,5 @@
 org: giantox
 console: true
-# serverless.yml
 
 service: otot-b
 app: otot-b
