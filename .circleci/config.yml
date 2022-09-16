@@ -28,12 +28,12 @@ jobs:
       # run tests
       - run: 
           name: Run tests
-          command: npm test
+          command: npx serverless invoke test
 
       # deploy app            
       - run:
           name: Deploy application 
-          command: sls deploy
+          command: npx serverless deploy
 
 workflows:
   version: 2
