@@ -17,7 +17,7 @@ jobs:
       #     name: Install Serverless CLI and dependencies
       #     command: |
       #       sudo npm install -g serverless
-      #       npm install
+      #       npm install 
       # - run:
       #     name: Set AWS credentials
       #     command: sls config credentials --provider aws --key $AWS_ACCESS_KEY_ID --secret $AWS_SECRET_ACCESS_KEY
