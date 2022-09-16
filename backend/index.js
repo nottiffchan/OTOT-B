@@ -29,8 +29,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const databaseUri = process.env.DB_URL_PROD;
-console.log("databaseUri 1: ", databaseUri);
-console.log("databaseUri 2: ", DB_URL_PROD);
 
 mongoose.connect(databaseUri, {
   useNewUrlParser: true,
