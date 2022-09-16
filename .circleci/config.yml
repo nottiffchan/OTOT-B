@@ -15,14 +15,15 @@ jobs:
           command: |
             sudo npm i -g serverless
             npm install
-      # run tests
-      - run: 
-          name: Run tests
-          command: npm test --exit
 
       - run:
           name: Set AWS credentials
           command: sls config credentials --provider aws --key $AWS_ACCESS_KEY_ID --secret $AWS_SECRET_ACCESS_KEY
+
+      # run tests
+      - run: 
+          name: Run tests
+          command: sls invoke test --exit
 
       # deploy app            
       - run:
