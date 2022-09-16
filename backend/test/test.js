@@ -8,7 +8,6 @@ let chai = mochaPlugin.chai;
 let should = chai.should();
 chai.use(chaiHttp);
 
-// Create default event
 var defaultEvent = (method, body) => {
   return {
     httpMethod: method,
