@@ -1,5 +1,10 @@
 let router = require("express").Router();
-let checkAuth = require("./middleware/check-auth");
+let {
+  checkAuthorisation,
+  checkAuthentication,
+} = require("./middleware/check-auth");
+const authController = require("./controllers/authController");
+const expenseController = require("./controllers/expenseController");
 
 router.get("/", function (req, res) {
   res.json({
@@ -8,22 +13,20 @@ router.get("/", function (req, res) {
   });
 });
 
-var expenseController = require("./expenseController");
-// expense routes
+router.post("/signup", authController.signup);
+router.post("/auth", authController.auth);
+router.get("/users", checkAuthorisation, authController.getAllUsers);
+
 router
   .route("/expenses")
-  .get(checkAuth, expenseController.index)
-  .post(expenseController.new);
+  .get(checkAuthorisation, expenseController.index)
+  .post(checkAuthentication, expenseController.new);
 router
   .route("/expenses/:expense_id")
-  .get(expenseController.view)
+  .get(checkAuthentication, expenseController.view)
   .put(expenseController.update)
   .delete(expenseController.delete);
+
 router.route("/convert").get(expenseController.convert);
 
-const { auth, signup } = require("./controllers/authController");
-router.post("/signup", signup);
-router.post("/auth", auth);
-
-// Export API routes
 module.exports = router;

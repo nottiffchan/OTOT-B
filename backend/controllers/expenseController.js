@@ -1,4 +1,4 @@
-Expense = require("./models/expenseModel");
+Expense = require("../models/expenseModel");
 fetch = require("node-fetch");
 const { Headers } = fetch;
 
@@ -65,12 +65,11 @@ exports.index = function (req, res) {
   });
 };
 
-// Handle create expense actions
 exports.new = function (req, res) {
   var expense = new Expense();
   expense.name = req.body.name ? req.body.name : expense.name;
   expense.amount = req.body.amount;
-  // save the expense and check for errors
+
   expense.save(function (err) {
     if (err) {
       res.status(404);
@@ -88,7 +87,6 @@ exports.new = function (req, res) {
   });
 };
 
-// Handle view expense info
 exports.view = function (req, res) {
   Expense.findById(req.params.expense_id, function (err, expense) {
     if (err) {
@@ -106,7 +104,6 @@ exports.view = function (req, res) {
   });
 };
 
-// Handle update expense info
 exports.update = function (req, res) {
   Expense.findById(req.params.expense_id, function (err, expense) {
     if (err) {
@@ -136,7 +133,6 @@ exports.update = function (req, res) {
   });
 };
 
-// Handle delete expense
 exports.delete = function (req, res) {
   Expense.deleteOne(
     {

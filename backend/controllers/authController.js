@@ -2,10 +2,12 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { createJWT } = require("../utils/auth");
+
 const emailRegexp =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
 exports.signup = (req, res, next) => {
-  let { username, email, password, password_confirmation, role } = req.body;
+  let { username, email, password, role } = req.body;
   let errors = [];
   if (!username) {
     errors.push({ username: "required" });
@@ -19,14 +21,7 @@ exports.signup = (req, res, next) => {
   if (!password) {
     errors.push({ password: "required" });
   }
-  if (!password_confirmation) {
-    errors.push({
-      password_confirmation: "required",
-    });
-  }
-  if (password != password_confirmation) {
-    errors.push({ password: "mismatch" });
-  }
+
   if (errors.length > 0) {
     return res.status(422).json({ errors: errors });
   }
@@ -113,7 +108,7 @@ exports.auth = (req, res) => {
                   return res.status(200).json({
                     success: true,
                     token: access_token,
-                    message: user,
+                    user: user,
                   });
                 }
               }
@@ -127,4 +122,10 @@ exports.auth = (req, res) => {
     .catch((err) => {
       res.status(500).json({ errors: err });
     });
+};
+
+exports.getAllUsers = (req, res) => {
+  User.find({}).then(function (users) {
+    res.status(200).json(users);
+  });
 };

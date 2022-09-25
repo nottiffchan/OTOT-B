@@ -2,6 +2,8 @@ let express = require("express");
 let bodyParser = require("body-parser");
 let mongoose = require("mongoose");
 const serverless = require("serverless-http");
+const jwt = require("jsonwebtoken");
+const User = require("./models/userModel");
 
 let app = express();
 
@@ -46,6 +48,28 @@ mongoose.connection.on("error", (err) => {
 const port = process.env.PORT || 8080;
 
 app.get("/", (req, res) => res.send("Hello World with Express"));
+
+app.use(async (req, res, next) => {
+  if (req.headers["authorization"]) {
+    const accessToken = req.headers["authorization"].split(" ")[1];
+
+    const { userId, exp } = await jwt.verify(
+      accessToken,
+      process.env.TOKEN_SECRET
+    );
+
+    // Check if token has expired
+    if (exp < Date.now().valueOf() / 1000) {
+      return res.status(401).json({
+        error: "JWT token has expired, please log in",
+      });
+    }
+    res.locals.loggedInUser = await User.findById(userId);
+    next();
+  } else {
+    next();
+  }
+});
 
 app.use("/api", apiRoutes);
 app.listen(port, function () {
