@@ -1,4 +1,5 @@
 let router = require("express").Router();
+let checkAuth = require("./middleware/check-auth");
 
 router.get("/", function (req, res) {
   res.json({
@@ -11,7 +12,7 @@ var expenseController = require("./expenseController");
 // expense routes
 router
   .route("/expenses")
-  .get(expenseController.index)
+  .get(checkAuth, expenseController.index)
   .post(expenseController.new);
 router
   .route("/expenses/:expense_id")
