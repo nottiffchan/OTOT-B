@@ -1,4 +1,4 @@
-Expense = require("./expenseModel");
+Expense = require("./models/expenseModel");
 fetch = require("node-fetch");
 const { Headers } = fetch;
 
