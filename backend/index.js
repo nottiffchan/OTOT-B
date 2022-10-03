@@ -51,21 +51,27 @@ app.get("/", (req, res) => res.send("Hello World with Express"));
 
 app.use(async (req, res, next) => {
   if (req.headers["authorization"]) {
-    const accessToken = req.headers["authorization"].split(" ")[1];
+    try {
+      const accessToken = req.headers["authorization"].split(" ")[1];
 
-    const { userId, exp } = await jwt.verify(
-      accessToken,
-      process.env.TOKEN_SECRET
-    );
+      const { userId, exp } = await jwt.verify(
+        accessToken,
+        process.env.TOKEN_SECRET
+      );
 
-    // Check if token has expired
-    if (exp < Date.now().valueOf() / 1000) {
+      // Check if token has expired
+      if (exp < Date.now().valueOf() / 1000) {
+        return res.status(401).json({
+          error: "JWT token has expired, please log in",
+        });
+      }
+      res.locals.loggedInUser = await User.findById(userId);
+      next();
+    } catch (error) {
       return res.status(401).json({
         error: "JWT token has expired, please log in",
       });
     }
-    res.locals.loggedInUser = await User.findById(userId);
-    next();
   } else {
     next();
   }

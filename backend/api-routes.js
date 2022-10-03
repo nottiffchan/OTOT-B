@@ -15,11 +15,11 @@ router.get("/", function (req, res) {
 
 router.post("/signup", authController.signup);
 router.post("/auth", authController.auth);
-router.get("/users", checkAuthorisation, authController.getAllUsers);
+router.get("/users", checkAuthorisation("admin"), authController.getAllUsers);
 
 router
   .route("/expenses")
-  .get(checkAuthorisation, expenseController.index)
+  .get(checkAuthorisation("admin"), expenseController.index)
   .post(checkAuthentication, expenseController.new);
 router
   .route("/expenses/:expense_id")

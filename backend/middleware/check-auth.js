@@ -11,11 +11,11 @@ exports.checkAuthentication = (req, res, next) => {
   }
 };
 
-exports.checkAuthorisation = (req, res, next) => {
+exports.checkAuthorisation = (role) => (req, res, next) => {
   const user = res.locals.loggedInUser;
 
   const userRole = user.role;
-  if (userRole.includes("admin")) {
+  if (userRole.includes(role)) {
     next();
   } else {
     res.status(403).json({
