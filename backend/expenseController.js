@@ -1,7 +1,17 @@
 Expense = require("./expenseModel");
 fetch = require("node-fetch");
 const { Headers } = fetch;
+const redis = require("redis").createClient();
+(async () => {
+  redis.on("error", (err) => {
+    console.log("Redis Client Error", err);
+  });
+  redis.on("ready", () => console.log("Redis is ready"));
 
+  await redis.connect();
+
+  await redis.ping();
+})();
 exports.convert = function (req, res) {
   let myHeaders = new Headers();
 
@@ -46,23 +56,41 @@ exports.convert = function (req, res) {
   }
 };
 
-exports.index = function (req, res) {
-  Expense.get(function (err, expenses) {
-    if (err) {
-      res.status(404);
+exports.index = async function (req, res) {
+  try {
+    const data = await redis.get("expenses");
+    // const data = null;
 
-      res.json({
-        status: "error",
-        message: err,
-      });
+    if (data) {
+      console.log("Retrived from cache");
+      res.json(JSON.parse(data));
     } else {
-      res.json({
-        status: "success",
-        message: "Expenses retrieved successfully",
-        data: expenses,
+      Expense.get(function (err, expenses) {
+        if (err) {
+          res.status(404);
+          res.json({
+            status: "error",
+            message: err,
+          });
+        } else {
+          redis.SETEX("expenses", 30, JSON.stringify(expenses));
+          console.log("Data from MongoDB");
+
+          res.json({
+            status: "success",
+            message: "Expenses retrieved successfully",
+            data: expenses,
+          });
+        }
       });
     }
-  });
+  } catch (error) {
+    res.status(404);
+    res.json({
+      status: "error",
+      message: error,
+    });
+  }
 };
 
 // Handle create expense actions
